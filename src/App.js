@@ -25,13 +25,63 @@ class App extends React.Component {
     this.getWeather();
 
     this.weatherIcon = {
-      Thunderstorm: "wi-thunderstorm"
+      Thunderstorm: "wi-thunderstorm",
+      Drizzle: "wi-sleet",
+      Rain: "wi-storm-showers",
+      Snow: "wi-snow",
+      Atmosphere: "wi-fog",
+      Clear: "wi-day-sunny",
+      Clouds: "wi-day-fog"
     };
   }
 
   calCelsius(temp) {
     let cell = Math.floor(temp - 273.15);
     return cell;
+  }
+
+  getWeatherIcon(icon, rangeId) {
+    switch (true) {
+      case rangeId >= 200 && rangeId <= 232:
+        this.setState({
+          icon: this.weatherIcon.Thunderstorm
+        });
+        break;
+      case rangeId >= 300 && rangeId <= 321:
+        this.setState({
+          icon: this.weatherIcon.Drizzle
+        });
+        break;
+      case rangeId >= 500 && rangeId <= 531:
+        this.setState({
+          icon: this.weatherIcon.Rain
+        });
+        break;
+      case rangeId >= 600 && rangeId <= 622:
+        this.setState({
+          icon: this.weatherIcon.Snow
+        });
+        break;
+      case rangeId >= 700 && rangeId <= 781:
+        this.setState({
+          icon: this.weatherIcon.Atmosphere
+        });
+        break;
+      case rangeId === 800:
+        this.setState({
+          icon: this.weatherIcon.Clear
+        });
+        break;
+      case rangeId >= 801 && rangeId <= 804:
+        this.setState({
+          icon: this.weatherIcon.Clouds
+        });
+        break;
+      default:
+        this.setState({
+          icon: this.weatherIcon.Clouds
+        });
+    }
   }
 
   getWeather = async () => {
@@ -48,9 +98,10 @@ class App extends React.Component {
       celsius: this.calCelsius(response.main.temp),
       temp_max: this.calCelsius(response.main.temp_max),
       temp_min: this.calCelsius(response.main.temp_min),
-      description: response.weather[0].description,
-      icon: this.weatherIcon.Thunderstorm
+      description: response.weather[0].description
     });
+
+    this.getWeatherIcon(this.weatherIcon, response.weather[0].id);
   };
 
   render() {
